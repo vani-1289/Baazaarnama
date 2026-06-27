@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8" data-aos="fade-up">
+            <div class="card premium-card border-0 shadow-lg" style="background-color: #fff;">
+                <div class="card-body-custom p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary font-weight-bold">Join Baazaarnama</h2>
+                        <p class="text-muted small">Connect with your local community market online</p>
+                    </div>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger py-2 small border-0 text-danger">
+                            {% for error in form.non_field_errors %}
+                            <i class="fas fa-exclamation-triangle me-1"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Username field -->
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label font-weight-medium small text-dark">Username <span class="text-danger">*</span></label>
+                            <input type="text" name="username" class="form-control border-secondary bg-white {% if form.username.errors %}is-invalid{% endif %}" required id="id_username" placeholder="Choose a username" value="{{ form.username.value|default:'' }}">
+                            {% if form.username.errors %}
+                            <div class="invalid-feedback">{% for error in form.username.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                            <div class="form-text text-muted" style="font-size: 10px;">Letters, digits and @/./+/-/_ only.</div>
+                        </div>
+
+                        <!-- Email field -->
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label font-weight-medium small text-dark">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control border-secondary bg-white {% if form.email.errors %}is-invalid{% endif %}" required id="id_email" placeholder="you@example.com" value="{{ form.email.value|default:'' }}">
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password 1 field -->
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label font-weight-medium small text-dark">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password1" class="form-control border-secondary bg-white {% if form.password1.errors %}is-invalid{% endif %}" required id="id_password1" placeholder="Enter secure password">
+                            {% if form.password1.errors %}
+                            <div class="invalid-feedback">{% for error in form.password1.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password 2 field -->
+                        <div class="mb-4">
+                            <label for="id_password2" class="form-label font-weight-medium small text-dark">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password2" class="form-control border-secondary bg-white {% if form.password2.errors %}is-invalid{% endif %}" required id="id_password2" placeholder="Confirm your password">
+                            {% if form.password2.errors %}
+                            <div class="invalid-feedback">{% for error in form.password2.errors %}{{ error }}{% endfor %}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Custom Seller check-box card -->
+                        <div class="card p-3 mb-4 bg-light border-0 shadow-sm" style="border-radius: 12px;">
+                            <div class="form-check d-flex align-items-center">
+                                <input class="form-check-input me-3" type="checkbox" name="is_seller" id="is_seller" style="width: 22px; height: 22px; border-color: var(--primary);">
+                                <label class="form-check-label text-start" for="is_seller">
+                                    <span class="d-block font-weight-bold text-dark mb-0">Register as Seller/Vendor</span>
+                                    <span class="d-block text-muted small" style="font-size: 11px;">Tick this if you want to set up and manage your own shops, products, and offers.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-premium text-white btn-lg">Create Account</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3 pt-3 border-top border-light">
+                        <span class="text-muted small">Already have an account? </span>
+                        <a href="{% url 'users:login' %}" class="small font-weight-bold text-primary">Login Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

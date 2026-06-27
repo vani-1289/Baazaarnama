@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'bazaar:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'bazaar:market_list' %}">Markets</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'bazaar:market_detail' product.shop.market.id %}">{{ product.shop.market.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'bazaar:shop_detail' product.shop.id %}">{{ product.shop.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Product Details Card -->
+    <div class="card premium-card border-0 shadow-sm p-4 p-md-5 bg-white mb-5" style="border-radius:20px;">
+        <div class="row g-4 align-items-center">
+            <!-- Product Photo -->
+            <div class="col-md-5 text-center">
+                <img src="{{ product.image.url }}" class="rounded shadow-md border img-fluid" style="width: 100%; max-height: 400px; object-fit: cover;" alt="{{ product.name }}">
+            </div>
+            
+            <!-- Details Info -->
+            <div class="col-md-7">
+                <div class="mb-2">
+                    <span class="badge bg-light text-primary border px-3 py-1" style="border-radius:20px; font-size:11px;">
+                        <i class="fas fa-store"></i> {{ product.shop.name }}
+                    </span>
+                    {% if product.stock > 0 %}
+                    <span class="badge bg-success text-white px-3 py-1 ms-2" style="border-radius:20px; font-size:11px;">In Stock ({{ product.stock }})</span>
+                    {% else %}
+                    <span class="badge bg-danger text-white px-3 py-1 ms-2" style="border-radius:20px; font-size:11px;">Out of Stock</span>
+                    {% endif %}
+                </div>
+
+                <h2 class="font-weight-bold text-dark mb-3">{{ product.name }}</h2>
+
+                <!-- Price Block -->
+                <div class="mb-4 pb-3 border-bottom">
+                    <span class="fs-2 font-weight-bold text-primary">₹{{ product.discounted_price }}</span>
+                    {% if product.discount > 0 %}
+                    <span class="fs-5 text-muted text-decoration-line-through ms-2">₹{{ product.price }}</span>
+                    <span class="badge bg-danger rounded-pill px-3 py-1 ms-3" style="font-size:12px;">{{ product.discount }}% Off</span>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <h6 class="font-weight-bold text-dark mb-2">Item Description:</h6>
+                <p class="text-muted small mb-4" style="line-height:1.6; white-space:pre-wrap;">{{ product.description|default:"No description provided for this product." }}</p>
+
+                <!-- Actions -->
+                <div class="d-flex flex-wrap gap-2">
+                    <!-- Wishlist Toggle -->
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'bazaar:wishlist_toggle' product.id %}" class="btn btn-premium btn-wishlist-toggle px-4 py-2 text-white">
+                        <i class="{% if is_wishlisted %}fas{% else %}far{% endif %} fa-heart me-2"></i>
+                        <span class="btn-text">{% if is_wishlisted %}Wishlisted{% else %}Add to Wishlist{% endif %}</span>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-premium px-4 py-2 text-white">
+                        <i class="far fa-heart me-2"></i> Add to Wishlist
+                    </a>
+                    {% endif %}
+
+                    <!-- Contact/Locate Stalls -->
+                    <a href="{% url 'bazaar:shop_detail' product.shop.id %}" class="btn btn-premium-outline px-4 py-2">
+                        <i class="fas fa-store-alt me-2"></i> Visit Store Stall
+                    </a>
+                </div>
+
+                <!-- Shop walk marker widget -->
+                <div class="mt-4 p-3 bg-light rounded d-flex align-items-center" style="border-radius:12px !important;">
+                    <div class="bg-primary text-white rounded-circle text-center me-3" style="width:40px; height:40px; line-height:40px; font-size:18px;"><i class="fas fa-map-marked-alt"></i></div>
+                    <div>
+                        <small class="text-muted text-uppercase d-block font-weight-bold" style="font-size:9px;">Stall Map Routing Coordinates</small>
+                        <span class="small font-weight-bold text-dark">{{ product.shop.market.name }} - Row {{ product.shop.map_y }}, Col {{ product.shop.map_x }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products Grid -->
+    {% if related_products %}
+    <div class="my-5" data-aos="fade-up">
+        <h4 class="font-weight-bold text-dark mb-4">Other Items from {{ product.shop.name }}</h4>
+        <div class="row g-3">
+            {% for rel in related_products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card premium-card border-0 h-100 d-flex flex-column justify-content-between">
+                    <div class="card-img-wrapper" style="height: 140px;">
+                        <img src="{{ rel.image.url }}" alt="{{ rel.name }}">
+                        {% if rel.discount > 0 %}
+                        <span class="card-tag bg-danger">-{{ rel.discount }}%</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body-custom p-3 flex-grow-1 d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="font-weight-bold text-dark mb-1 text-truncate">{{ rel.name }}</h6>
+                            <p class="text-muted small mb-2 text-truncate">{{ rel.description }}</p>
+                        </div>
+                        <div class="border-top border-light pt-2 mt-2 d-flex justify-content-between align-items-center">
+                            <span class="font-weight-bold text-primary">₹{{ rel.discounted_price }}</span>
+                            <a href="{% url 'bazaar:product_detail' rel.id %}" class="btn btn-sm btn-premium text-white py-0 px-2 small">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

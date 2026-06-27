@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Interactive Map - {{ market.name }} | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <!-- Breadcrumbs -->
+    <div class="container mb-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'bazaar:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'bazaar:market_list' %}">Markets</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'bazaar:market_detail' market.id %}">{{ market.name }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">AI Interactive Map</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Map Split Dashboard -->
+    <div class="container">
+        <div class="row g-4">
+            <!-- Sidebar Controls panel (Left) -->
+            <div class="col-lg-4 col-md-5">
+                <div class="map-sidebar shadow-sm p-4 bg-white mb-4">
+                    <h5 class="font-weight-bold mb-3 text-dark border-bottom pb-2">
+                        <i class="fas fa-search-location text-primary me-2"></i> Locate Shop
+                    </h5>
+                    
+                    <!-- Search Stall -->
+                    <div class="mb-3">
+                        <label class="form-label small text-muted font-weight-bold">Search Stall by Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-secondary"><i class="fas fa-search"></i></span>
+                            <input type="text" id="map-shop-search" class="form-control border-secondary bg-light" placeholder="Search shop name...">
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <label class="form-label small text-muted font-weight-bold">Filter Category</label>
+                        <select id="map-category-filter" class="form-select border-secondary bg-light">
+                            <option value="all">All Categories</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.name }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <h5 class="font-weight-bold mb-3 text-dark border-bottom pb-2 pt-2">
+                        <i class="fas fa-route text-primary me-2"></i> Get Walking Route
+                    </h5>
+                    
+                    <!-- Walk Routing Inputs -->
+                    <div class="mb-2">
+                        <label class="form-label small text-muted font-weight-bold">Start Location</label>
+                        <select id="route-start" class="form-select border-secondary bg-light"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-muted font-weight-bold">Destination Stall</label>
+                        <select id="route-end" class="form-select border-secondary bg-light"></select>
+                    </div>
+
+                    <!-- Routing instructions log -->
+                    <div class="card bg-light border-0 shadow-inner p-3 mb-2" style="border-radius:12px;">
+                        <h6 class="font-weight-bold small text-dark mb-2"><i class="fas fa-list-ol text-primary me-1"></i> Walking Directions:</h6>
+                        <ul class="list-group list-group-flush" id="walk-directions-steps" style="max-height: 150px; overflow-y: auto; font-size: 11px;">
+                            <li class="list-group-item d-flex align-items-center bg-transparent border-0 py-1 text-muted">
+                                Select start & destination stalls to trace walk path.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- GPS Locator card -->
+                <div class="card border-0 shadow-sm p-4 bg-white mb-4" style="border-radius: 16px;">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                        <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-compass text-primary me-2"></i> Nearest Stall Locator</h5>
+                        <button class="btn btn-sm btn-premium text-white py-1 px-3" id="trigger-gps-locator" style="font-size:11px;">Locate Me</button>
+                    </div>
+                    <div id="nearest-shops-output" class="text-muted small">
+                        Click "Locate Me" to allow GPS location access and display closest shop stalls.
+                    </div>
+                </div>
+
+                <!-- Dynamic Shop Info Card Popup (on stall click) -->
+                <div id="shop-info-card" class="mb-4">
+                    <div class="alert alert-light text-center border py-4 mb-0 small" style="border-radius:16px;">
+                        <i class="fas fa-store fa-2x text-secondary mb-2"></i><br>
+                        Click any shop stall square on the interactive map grid to view details here.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viewport container (Right) -->
+            <div class="col-lg-8 col-md-7">
+                <div class="map-viewport shadow-sm p-4 bg-white">
+                    <!-- Nav Tabs for switching maps -->
+                    <ul class="nav nav-tabs mb-4 d-flex justify-content-start" id="mapTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active font-weight-bold text-uppercase px-4 py-2 border-0" id="virtual-tab" data-bs-toggle="tab" data-bs-target="#virtual-pane" type="button" role="tab" aria-controls="virtual-pane" aria-selected="true" style="border-radius: 8px 8px 0 0;">
+                                <i class="fas fa-border-all me-1"></i> Virtual Bazaar Layout
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link font-weight-bold text-uppercase px-4 py-2 border-0" id="geo-tab" data-bs-toggle="tab" data-bs-target="#geo-pane" type="button" role="tab" aria-controls="geo-pane" aria-selected="false" style="border-radius: 8px 8px 0 0;">
+                                <i class="fas fa-map-marked-alt me-1"></i> Geographic View
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panels -->
+                    <div class="tab-content" id="mapTabContent">
+                        <!-- A. Virtual Map Panel -->
+                        <div class="tab-pane fade show active text-center" id="virtual-pane" role="tabpanel" aria-labelledby="virtual-tab">
+                            <p class="text-muted small text-start mb-3">
+                                <i class="fas fa-info-circle text-primary me-1"></i> <b>How to navigate:</b> The layout below simulates vendor stalls. Walkways are colored beige. Click on any stall block to view the vendor details or calculate route paths.
+                            </p>
+                            <div class="virtual-map-container">
+                                <svg id="virtual-bazaar-svg" class="virtual-bazaar-svg"></svg>
+                            </div>
+                        </div>
+
+                        <!-- B. Geographic Map Panel -->
+                        <div class="tab-pane fade" id="geo-pane" role="tabpanel" aria-labelledby="geo-tab">
+                            <p class="text-muted small mb-3">
+                                <i class="fas fa-info-circle text-primary me-1"></i> <b>Real World Map:</b> Shows exact real-world locations of bazaar centers and shops around them.
+                            </p>
+                            <div id="geo-map-container" class="shadow-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Load the map scripting modules -->
+<script src="{% static 'js/ai_maps.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const marketId = "{{ market.id }}";
+        const mapDataUrl = "{% url 'ai_maps:market_map_data' market.id %}";
+        const directionsUrl = "{% url 'ai_maps:walking_directions' market.id %}";
+
+        // Initialize mapping engine
+        const engine = new BazaarMapEngine(marketId, mapDataUrl, directionsUrl);
+        engine.init();
+
+        // Save reference globally for button onclick functions
+        window.mapEngine = engine;
+
+        // Custom Leaflet resizing when switching tabs
+        const geoTabEl = document.getElementById('geo-tab');
+        if (geoTabEl) {
+            geoTabEl.addEventListener('shown.bs.tab', () => {
+                if (engine.geoMap) {
+                    engine.geoMap.invalidateSize();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

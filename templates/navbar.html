@@ -1,0 +1,66 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-custom fixed-top {% if request.path == '/' %}navbar-transparent{% endif %}">
+    <div class="container">
+        <!-- Logo Text with Branding and Tagline -->
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'bazaar:home' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Baazaarnama Logo" class="me-2" style="width: 42px; height: 42px; border-radius: 50%; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));">
+            <div class="d-flex flex-column align-items-start">
+                <span class="brand-font fs-4 mb-0 text-uppercase" style="font-weight: 900; line-height: 1.0;">BaazaarNama</span>
+                <span class="text-uppercase" style="font-size: 7px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent);">Desi Market, Gone Digital</span>
+            </div>
+        </a>
+
+        <!-- Responsive Burger Toggle -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links and Dropdowns -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link {% if 'markets' in request.path %}active{% endif %}" href="{% url 'bazaar:market_list' %}">Explore Markets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if 'shops' in request.path %}active{% endif %}" href="{% url 'bazaar:shop_list' %}">Shops</a>
+                </li>
+                
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown ms-lg-3">
+                    <a class="nav-link dropdown-toggle btn-premium-outline px-3 py-1 text-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="far fa-user-circle me-1"></i> Hello, {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2" aria-labelledby="profileDropdown" style="background-color: var(--bg-light); border-radius: 12px;">
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'users:dashboard' %}">
+                                <i class="fas fa-columns me-2 text-primary"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2" href="{% url 'users:profile' %}">
+                                <i class="fas fa-user me-2 text-primary"></i> My Profile
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent text-start w-100">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item ms-lg-3">
+                    <a class="nav-link text-dark" href="{% url 'users:login' %}">Login</a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-premium text-white" href="{% url 'users:register' %}">Register</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

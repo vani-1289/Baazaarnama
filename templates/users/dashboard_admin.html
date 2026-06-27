@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Control | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Navigation Panel -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="dashboard-sidebar">
+                <div class="text-center mb-4">
+                    <img src="{{ user.profile.profile_image.url }}" class="rounded-circle shadow-md border" style="width: 80px; height: 80px; object-fit: cover;">
+                    <h6 class="font-weight-bold text-dark mt-2 mb-0">{{ user.username }}</h6>
+                    <small class="text-muted text-uppercase" style="font-size: 9px; font-weight: bold; color: var(--danger) !important;">Staff Administrator</small>
+                </div>
+                <div class="list-group">
+                    <a href="{% url 'users:dashboard' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-columns me-2"></i> Dashboard Overview
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> My Profile
+                    </a>
+                    <a href="{% url 'users:profile_edit' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i> Edit Profile Info
+                    </a>
+                    <a href="/admin/" class="list-group-item list-group-item-action">
+                        <i class="fas fa-cog me-2"></i> Django Admin Site
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Dashboard Overview Panel -->
+        <div class="col-lg-9 col-md-8">
+            <h3 class="font-weight-bold mb-4">Admin Dashboard</h3>
+
+            <!-- 1. Stats Counter Widgets -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4 col-sm-6">
+                    <div class="dashboard-stat-card" style="border-bottom-color: var(--primary);">
+                        <div class="dashboard-stat-icon"><i class="fas fa-shopping-basket"></i></div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold text-dark">{{ total_markets }}</h4>
+                            <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Total Markets</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="dashboard-stat-card" style="border-bottom-color: var(--accent);">
+                        <div class="dashboard-stat-icon"><i class="fas fa-store"></i></div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold text-dark">{{ total_shops }}</h4>
+                            <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Total Shops</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="dashboard-stat-card" style="border-bottom-color: var(--gold);">
+                        <div class="dashboard-stat-icon"><i class="fas fa-box"></i></div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold text-dark">{{ total_products }}</h4>
+                            <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Total Products</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="dashboard-stat-card" style="border-bottom-color: var(--success);">
+                        <div class="dashboard-stat-icon"><i class="fas fa-users"></i></div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold text-dark">{{ total_users }}</h4>
+                            <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Registered Users</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="dashboard-stat-card" style="border-bottom-color: var(--danger);">
+                        <div class="dashboard-stat-icon"><i class="fas fa-comment-dots"></i></div>
+                        <div>
+                            <h4 class="mb-0 font-weight-bold text-dark">{{ total_reviews }}</h4>
+                            <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Total Reviews</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Recent Registered Shops Panel -->
+            <div class="card premium-card border-0 shadow-sm mb-4" style="background-color:#fff;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="font-weight-bold mb-0 text-dark"><i class="fas fa-store text-primary me-2"></i> Recently Registered Shops</h5>
+                </div>
+                <div class="card-body-custom p-4">
+                    {% if recent_shops %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-sm small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Shop Name</th>
+                                    <th>Market</th>
+                                    <th>Owner</th>
+                                    <th>Verification</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shop in recent_shops %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ shop.shop_image.url }}" class="rounded me-2" style="width:30px; height:30px; object-fit:cover;">
+                                            <span class="text-dark font-weight-bold">{{ shop.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ shop.market.name }}</td>
+                                    <td>{{ shop.owner.username }}</td>
+                                    <td>
+                                        {% if shop.verified_shop %}
+                                        <span class="badge bg-success rounded-pill">Verified</span>
+                                        {% else %}
+                                        <span class="badge bg-warning text-dark rounded-pill">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4 mb-0">No shops registered yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- 3. Recent Reviews Panel -->
+            <div class="card premium-card border-0 shadow-sm" style="background-color:#fff;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="font-weight-bold mb-0 text-dark"><i class="fas fa-comment-dots text-danger me-2"></i> Recent Feedback Activity</h5>
+                </div>
+                <div class="card-body-custom p-4">
+                    {% if recent_reviews %}
+                    <div class="list-group list-group-flush">
+                        {% for review in recent_reviews %}
+                        <div class="list-group-item bg-white border-0 border-bottom px-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div>
+                                    <span class="font-weight-bold text-dark">{{ review.user.username }}</span>
+                                    <span class="text-muted small">on</span>
+                                    <span class="font-weight-bold text-primary">{{ review.shop.name }}</span>
+                                </div>
+                                <span class="text-warning small">
+                                    {% for i in "12345" %}
+                                    <i class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star"></i>
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            <small class="text-muted d-block mb-2">{{ review.created_date|date:"d M Y H:i" }}</small>
+                            <p class="text-dark small mb-0">{{ review.review }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4 mb-0">No feedback reviews submitted yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <!-- Sidebar Navigation Panel -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="dashboard-sidebar">
+                <h5 class="font-weight-bold mb-4 text-center text-primary">Seller Console</h5>
+                <div class="list-group">
+                    <a href="{% url 'users:dashboard' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-columns me-2"></i> Dashboard Overview
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> My Profile
+                    </a>
+                    <a href="{% url 'users:profile_edit' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i> Edit Profile Info
+                    </a>
+                    <a href="{% url 'users:password_change' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Offer Card -->
+        <div class="col-lg-7 col-md-8 mb-4">
+            <div class="card premium-card border-0 shadow-sm" style="background-color: #fff;">
+                <div class="card-body-custom p-5">
+                    <h3 class="font-weight-bold text-dark mb-2 text-center text-sm-start">{{ title }}</h3>
+                    <p class="text-muted small mb-4">Create special discount flyers or discount offers for your shop stall. Customers can view and claim these offers.</p>
+                    
+                    <div class="bg-light p-3 rounded mb-4 d-flex align-items-center" style="border-radius:12px !important;">
+                        <img src="{{ shop.shop_image.url }}" class="rounded me-3 border" style="width:45px; height:45px; object-fit:cover;">
+                        <div>
+                            <small class="text-muted text-uppercase d-block font-weight-bold" style="font-size:8px;">Target Store Stall</small>
+                            <span class="small font-weight-bold text-dark">{{ shop.name }}</span>
+                        </div>
+                    </div>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger py-2 small border-0 text-danger">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Please check requirements.
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            {% for field in form %}
+                            <div class="{% if field.name in 'description' %}col-12{% else %}col-sm-6{% endif %}">
+                                <label for="{{ field.id_for_label }}" class="form-label font-weight-medium small text-dark">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">{% for error in field.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                                {% if field.help_text %}
+                                <div class="form-text text-muted" style="font-size: 10px;">{{ field.help_text|safe }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a href="{% url 'users:dashboard_seller' %}" class="btn btn-premium-outline">Cancel</a>
+                            <button type="submit" class="btn btn-premium text-white">Save Offer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control, .form-select {
+        border-color: var(--secondary) !important;
+        background-color: #fff !important;
+        color: var(--text-dark) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 5px rgba(139, 94, 60, 0.2) !important;
+    }
+</style>
+{% endblock %}

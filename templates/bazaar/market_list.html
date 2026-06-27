@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Bazaars | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center" data-aos="fade-up">
+            <h2 class="section-title brand-font mb-2">Explore Traditional Alleys</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">
+                Discover India's heritage markets online. Select a city, browse alleyways, locate vendor stalls, and trace walking pathways on interactive maps.
+            </p>
+        </div>
+    </div>
+
+    <!-- City Filter Selector -->
+    <div class="row justify-content-center mb-5" data-aos="fade-up">
+        <div class="col-md-6 col-lg-4 text-center">
+            <form action="{% url 'bazaar:market_list' %}" method="get" id="city-filter-form">
+                <label class="form-label small text-muted font-weight-bold text-uppercase mb-2">Filter Bazaars by City</label>
+                <select name="city" class="form-select border-secondary bg-white rounded-pill shadow-sm" onchange="document.getElementById('city-filter-form').submit();">
+                    <option value="">All Cities</option>
+                    {% for city in cities %}
+                    <option value="{{ city }}" {% if selected_city == city %}selected{% endif %}>{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Markets List Grid -->
+    {% if markets %}
+    <div class="row g-4">
+        {% for market in markets %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card premium-card border-0 h-100 d-flex flex-column">
+                <div class="card-img-wrapper" style="height: 220px;">
+                    <img src="{{ market.cover_image.url }}" alt="{{ market.name }}">
+                    <span class="card-tag">{{ market.city }}</span>
+                </div>
+                <div class="card-body-custom p-4 flex-grow-1 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="font-weight-bold mb-2 text-dark">{{ market.name }}</h4>
+                        <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; height: 60px;">
+                            {{ market.description }}
+                        </p>
+                    </div>
+                    <div class="border-top border-light pt-3 mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small text-muted"><i class="far fa-clock text-primary me-1"></i> {{ market.opening_time|time:"g:i A" }} - {{ market.closing_time|time:"g:i A" }}</span>
+                            <span class="badge bg-light text-primary border" style="font-size:10px;">{{ market.shops.count }} Shops</span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6 d-grid">
+                                <a href="{% url 'bazaar:market_detail' market.id %}" class="btn btn-sm btn-premium-outline">Stalls List</a>
+                            </div>
+                            <div class="col-6 d-grid">
+                                <a href="{% url 'ai_maps:market_map' market.id %}" class="btn btn-sm btn-premium text-white"><i class="fas fa-map-marked-alt me-1"></i> Walk Maps</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted" data-aos="fade-up">
+        <i class="fas fa-store-slash fa-4x mb-3 text-secondary"></i>
+        <h5>No Bazaars Registered for this City.</h5>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

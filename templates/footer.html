@@ -1,0 +1,65 @@
+{% load static %}
+<footer class="footer-heritage mt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'images/logo.png' %}" alt="Baazaarnama Logo" class="me-2" style="width: 38px; height: 38px; border-radius: 50%; filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.15));">
+                    <h5 class="brand-font mb-0 text-white">BAAZAARNAMA</h5>
+                </div>
+                <p class="small text-muted mt-3" style="color: rgba(255, 255, 255, 0.65) !important;">
+                    Bringing India's traditional local markets to your fingertips. Discover hidden gems, interact with live map pathways, and support local community shops directly.
+                </p>
+                <div class="mt-4">
+                    <a href="#" class="footer-social-btn"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="footer-social-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled mt-3">
+                    <li><a href="{% url 'bazaar:market_list' %}">Browse Markets</a></li>
+                    <li><a href="{% url 'bazaar:shop_list' %}">Explore Shop Stalls</a></li>
+                    <li><a href="{% url 'bazaar:home' %}#why-us">Why Choose Us</a></li>
+                    <li><a href="{% url 'bazaar:home' %}#faq">Help & FAQs</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-2 col-md-6">
+                <h5>For Vendors</h5>
+                <ul class="list-unstyled mt-3">
+                    <li><a href="{% url 'users:register' %}?is_seller=true">Register as Seller</a></li>
+                    <li><a href="{% url 'users:dashboard' %}">Seller Dashboard</a></li>
+                    <li><a href="{% url 'bazaar:home' %}#testimonials">Success Stories</a></li>
+                    <li><a href="/admin/">Staff Admin Login</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled mt-3 text-muted small" style="color: rgba(255, 255, 255, 0.65) !important; line-height: 1.8;">
+                    <li><i class="fas fa-map-marker-alt me-2 text-accent"></i> 404 Chandni Chowk, Old Delhi, India</li>
+                    <li><i class="fas fa-phone-alt me-2 text-accent"></i> +91 98765 43210</li>
+                    <li><i class="fas fa-envelope me-2 text-accent"></i> support@baazaarnama.com</li>
+                    <li><i class="fas fa-clock me-2 text-accent"></i> Mon - Sun: 09:00 AM - 10:00 PM</li>
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="mt-5 mb-4" style="border-color: rgba(255,255,255,0.1);">
+        
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start small" style="color: rgba(255, 255, 255, 0.5) !important;">
+                &copy; 2026 Baazaarnama. All Rights Reserved. Made with <i class="fas fa-heart text-danger"></i> in India.
+            </div>
+            <div class="col-md-6 text-center text-md-end small mt-2 mt-md-0">
+                <a href="#" class="d-inline-block mx-2 text-muted" style="color: rgba(255, 255, 255, 0.5) !important;">Privacy Policy</a>
+                <span class="text-muted">|</span>
+                <a href="#" class="d-inline-block mx-2 text-muted" style="color: rgba(255, 255, 255, 0.5) !important;">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>

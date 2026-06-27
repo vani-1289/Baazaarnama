@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Baazaarnama - Desi Market, Gone Digital{% endblock %}
+
+{% block content %}
+<!-- 1. Heritage Hero Section -->
+<section class="hero-banner d-flex align-items-center">
+    <div class="container hero-content">
+        <h1 class="brand-font" data-aos="fade-down" data-aos-duration="1000">BAAZAARNAMA</h1>
+        <div class="hero-tagline" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200">Desi Market, Gone Digital</div>
+        <p class="lead text-white mb-5 mx-auto" style="max-width: 650px; font-weight: 300;" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
+            Digitally empowering India's traditional local markets. Explore alleys, locate vendors, browse fresh stocks, and navigate walking paths inside the bazaar!
+        </p>
+
+        <!-- Large Search Bar overlay -->
+        <div class="search-container shadow-lg text-start" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="500">
+            <form action="{% url 'bazaar:search' %}" method="get">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-3">
+                        <select name="city" class="form-select text-white border-0 bg-transparent py-2">
+                            <option value="">All Cities</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Jaipur">Jaipur</option>
+                            <option value="Kolkata">Kolkata</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text border-0 bg-transparent text-white"><i class="fas fa-search"></i></span>
+                            <input type="text" name="q" class="form-control text-white border-0 bg-transparent" placeholder="Search markets, cities, shops, categories, products...">
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-end d-grid">
+                        <button type="submit" class="btn btn-premium text-white py-2">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Popular Categories Section -->
+<section class="container my-5 py-4">
+    <h2 class="section-title brand-font" data-aos="fade-up">Popular Categories</h2>
+    <div class="row row-cols-2 row-cols-md-4 g-4 mt-2">
+        <!-- 4 static demo categories mapped with awesome icons -->
+        <div class="col" data-aos="fade-up" data-aos-delay="100">
+            <a href="{% url 'bazaar:shop_list' %}?category=1">
+                <div class="category-card shadow-sm">
+                    <div class="category-icon"><i class="fas fa-tshirt"></i></div>
+                    <h6 class="font-weight-bold text-dark mb-0">Apparel & Textiles</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col" data-aos="fade-up" data-aos-delay="200">
+            <a href="{% url 'bazaar:shop_list' %}?category=2">
+                <div class="category-card shadow-sm">
+                    <div class="category-icon"><i class="fas fa-pepper-hot"></i></div>
+                    <h6 class="font-weight-bold text-dark mb-0">Spices & Groceries</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col" data-aos="fade-up" data-aos-delay="300">
+            <a href="{% url 'bazaar:shop_list' %}?category=3">
+                <div class="category-card shadow-sm">
+                    <div class="category-icon"><i class="fas fa-gem"></i></div>
+                    <h6 class="font-weight-bold text-dark mb-0">Handicrafts & Jewels</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col" data-aos="fade-up" data-aos-delay="400">
+            <a href="{% url 'bazaar:shop_list' %}?category=4">
+                <div class="category-card shadow-sm">
+                    <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                    <h6 class="font-weight-bold text-dark mb-0">Local Street Food</h6>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Featured Markets Section -->
+<section class="container my-5 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title brand-font text-start mb-0">Trending Bazaars</h2>
+        <a href="{% url 'bazaar:market_list' %}" class="btn btn-premium-outline">View All</a>
+    </div>
+    
+    {% if markets %}
+    <div class="row g-4 mt-2">
+        {% for market in markets %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="150">
+            <div class="card premium-card border-0">
+                <div class="card-img-wrapper">
+                    <img src="{{ market.cover_image.url }}" alt="{{ market.name }}">
+                    <span class="card-tag">{{ market.city }}</span>
+                </div>
+                <div class="card-body-custom p-4">
+                    <h4 class="font-weight-bold mb-2 text-dark">{{ market.name }}</h4>
+                    <p class="text-muted small mb-3 text-truncate">{{ market.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted"><i class="far fa-clock me-1 text-primary"></i> {{ market.opening_time|time:"g:i A" }} - {{ market.closing_time|time:"g:i A" }}</small>
+                        <a href="{% url 'bazaar:market_detail' market.id %}" class="btn btn-sm btn-premium text-white">Explore Market</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">No markets added yet. Please check back later.</div>
+    {% endif %}
+</section>
+
+<!-- 4. Platform Statistics Section -->
+<section class="stats-section my-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-3 col-sm-6 text-center">
+                <div class="stat-box">
+                    <h2>{{ stats.markets_count }}+</h2>
+                    <p class="text-uppercase small font-weight-bold mb-0" style="letter-spacing: 1px;">Traditional Bazaars</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 text-center">
+                <div class="stat-box">
+                    <h2>{{ stats.shops_count }}+</h2>
+                    <p class="text-uppercase small font-weight-bold mb-0" style="letter-spacing: 1px;">Digital Shop Stalls</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 text-center">
+                <div class="stat-box">
+                    <h2>{{ stats.products_count }}+</h2>
+                    <p class="text-uppercase small font-weight-bold mb-0" style="letter-spacing: 1px;">Verified Products</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 text-center">
+                <div class="stat-box">
+                    <h2>{{ stats.happy_customers }}+</h2>
+                    <p class="text-uppercase small font-weight-bold mb-0" style="letter-spacing: 1px;">Offline Shoppers Routed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Featured Shops Section -->
+<section class="container my-5 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title brand-font text-start mb-0">Featured Stalls</h2>
+        <a href="{% url 'bazaar:shop_list' %}" class="btn btn-premium-outline">View All</a>
+    </div>
+
+    {% if featured_shops %}
+    <div class="row g-4 mt-2">
+        {% for shop in featured_shops %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="150">
+            <div class="card premium-card border-0">
+                <div class="card-img-wrapper">
+                    <img src="{{ shop.shop_image.url }}" alt="{{ shop.name }}">
+                    {% if shop.verified_shop %}
+                    <span class="card-tag bg-success"><i class="fas fa-check-circle me-1"></i> Verified</span>
+                    {% endif %}
+                </div>
+                <div class="card-body-custom p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="font-weight-bold mb-1 text-dark text-truncate" style="max-width:70%;">{{ shop.name }}</h5>
+                        <div class="card-rating">
+                            <i class="fas fa-star"></i> <span>{{ shop.average_rating }}</span>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-2 text-truncate">{{ shop.market.name }} ({{ shop.market.city }})</p>
+                    <p class="text-muted small mb-3 text-truncate">{{ shop.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-light">
+                        <span class="badge bg-light text-primary border" style="font-size:10px;">{{ shop.category.name }}</span>
+                        <a href="{% url 'bazaar:shop_detail' shop.id %}" class="btn btn-sm btn-premium text-white py-1 px-3">Visit Stall</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">No shops added yet. Please check back later.</div>
+    {% endif %}
+</section>
+
+<!-- 6. Active Discount Offers Section -->
+{% if offers %}
+<section class="container my-5 py-4">
+    <h2 class="section-title brand-font" data-aos="fade-up">Active Deals & Offers</h2>
+    <div class="row g-4 mt-2">
+        {% for offer in offers %}
+        <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="150">
+            <div class="card p-4 border-0 shadow-sm text-center h-100" style="border-radius:16px; background-color:#fff; border-top: 4px solid var(--accent) !important;">
+                <span class="badge bg-danger rounded-pill mx-auto px-3 py-2 mb-3" style="font-size: 14px;">{{ offer.discount_percentage }}% OFF</span>
+                <h5 class="font-weight-bold text-dark mb-2 text-truncate">{{ offer.title }}</h5>
+                <p class="text-muted small mb-3 text-truncate">{{ offer.description }}</p>
+                <div class="mt-auto border-top border-light pt-3">
+                    <small class="text-muted d-block mb-2"><i class="fas fa-store"></i> {{ offer.shop.name }}</small>
+                    <a href="{% url 'bazaar:shop_detail' offer.shop.id %}" class="btn btn-sm btn-premium text-white py-1 px-3 w-100">Claim Offer</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- 7. Why Choose Us Section -->
+<section id="why-us" class="bg-light py-5 my-5">
+    <div class="container my-4">
+        <h2 class="section-title brand-font" data-aos="fade-up">Why Choose Baazaarnama</h2>
+        <div class="row g-4 mt-2">
+            <div class="col-md-4 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-4 bg-white rounded shadow-sm border border-light h-100" style="border-radius: 16px !important;">
+                    <div class="category-icon mb-3"><i class="fas fa-map-marked-alt"></i></div>
+                    <h5 class="font-weight-bold text-dark mb-2">Interactive AI Maps</h5>
+                    <p class="text-muted small mb-0">Explore physical bazaar layouts on interactive grids, find shops, verify locations, and optimize your walking routes easily.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-4 bg-white rounded shadow-sm border border-light h-100" style="border-radius: 16px !important;">
+                    <div class="category-icon mb-3"><i class="fas fa-store"></i></div>
+                    <h5 class="font-weight-bold text-dark mb-2">Support Local Shops</h5>
+                    <p class="text-muted small mb-0">Empowering traditional offline businesses by bridging them with local consumers digitally, keeping our Indian heritage alive.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-4 bg-white rounded shadow-sm border border-light h-100" style="border-radius: 16px !important;">
+                    <div class="category-icon mb-3"><i class="fas fa-percentage"></i></div>
+                    <h5 class="font-weight-bold text-dark mb-2">Pre-visit Discoveries</h5>
+                    <p class="text-muted small mb-0">Browse stock details, check ratings, check opening hours, and scan exclusive deals before stepping out to visit the shops.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. Testimonials Section -->
+<section id="testimonials" class="container my-5 py-4">
+    <h2 class="section-title brand-font" data-aos="fade-up">Success Stories</h2>
+    <div class="row g-4 mt-2">
+        <div class="col-md-6" data-aos="fade-right">
+            <div class="card p-4 border-0 shadow-sm" style="border-radius:16px; background-color:#fff;">
+                <p class="text-muted small mb-3">
+                    "Since listing our spice shop in the Chandni Chowk digital bazaar, our sales have grown by 30%. Customers who used to pass by now visit our stall directly, using the walking maps."
+                </p>
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary text-white rounded-circle text-center me-3" style="width:45px; height:45px; line-height:45px; font-weight:bold;">RG</div>
+                    <div>
+                        <h6 class="font-weight-bold text-dark mb-0">Rajesh Gupta</h6>
+                        <small class="text-muted text-uppercase" style="font-size:9px;">Spice Vendor, Delhi</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-left">
+            <div class="card p-4 border-0 shadow-sm" style="border-radius:16px; background-color:#fff;">
+                <p class="text-muted small mb-3">
+                    "I love shopping at local bazaars but hate getting lost. The interactive layouts on Baazaarnama let me plan my route, find handicrafts shops, and claim discount offers beforehand!"
+                </p>
+                <div class="d-flex align-items-center">
+                    <div class="bg-accent text-white rounded-circle text-center me-3" style="width:45px; height:45px; line-height:45px; font-weight:bold;">AS</div>
+                    <div>
+                        <h6 class="font-weight-bold text-dark mb-0">Ananya Sharma</h6>
+                        <small class="text-muted text-uppercase" style="font-size:9px;">Avid Shopper, Jaipur</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 9. FAQ Section -->
+<section id="faq" class="container my-5 py-4">
+    <h2 class="section-title brand-font" data-aos="fade-up">Frequently Asked Questions</h2>
+    <div class="row justify-content-center mt-2">
+        <div class="col-lg-8" data-aos="fade-up">
+            <div class="accordion faq-accordion shadow-sm" id="accordionFAQ">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            What is Baazaarnama?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body small text-muted">
+                            Baazaarnama is a digital marketplace directory designed to bring traditional Indian bazaars to your screen. You can browse local markets, find verified vendor shop stalls, search items, and locate them using virtual grid walk-path maps.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            How do the AI interactive maps work?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body small text-muted">
+                            Each bazaar is represented as an interactive grid floor plan showing shop locations. You can select a starting point (like the market entrance) and select your target shop to automatically trace and calculate walking directions.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Is Baazaarnama free for sellers?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionFAQ">
+                        <div class="accordion-body small text-muted">
+                            Yes! Listing your shops, products, and offers on Baazaarnama is completely free. We aim to empower small scale vendors by increasing their physical store footfall using digital channels.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 10. Newsletter Section -->
+<section class="container my-5 py-4 text-center" data-aos="zoom-in">
+    <div class="newsletter-box shadow-sm">
+        <h3 class="font-weight-bold text-dark mb-2">Subscribe to our newsletter</h3>
+        <p class="text-muted small mb-4">Stay updated with newly digitised markets, popular shops, and weekly local shopping festivals.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form onsubmit="alert('Thank you for subscribing!'); return false;">
+                    <div class="input-group">
+                        <input type="email" class="form-control border-secondary bg-white" placeholder="Enter your email address" required style="border-radius: 50px 0 0 50px; padding-left: 20px;">
+                        <button type="submit" class="btn btn-premium text-white" style="border-radius: 0 50px 50px 0; padding-left: 25px; padding-right: 25px;">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Simple custom template tag helper since Django filters are limited -->
+{% endblock %}

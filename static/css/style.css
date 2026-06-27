@@ -1,0 +1,35 @@
+:root{
+    --primary: #8B5E3C;
+    --secondary: #D9C2A3;
+    --background: #F5EFE6;
+    --card: #FFFDF9;
+    --text: #3E2C23;
+    --accent: #C97B63;
+}
+
+.navbar{
+    background:#3E2C23;
+}
+
+.market-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:25px;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+}
+
+.card{
+    border:none;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.btn-custom{
+    background:#8B5E3C;
+    color:white;
+    border-radius:30px;
+    padding:10px 25px;
+}

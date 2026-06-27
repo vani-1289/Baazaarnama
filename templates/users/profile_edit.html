@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <!-- Sidebar Navigation Panel -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="dashboard-sidebar">
+                <h5 class="font-weight-bold mb-4 text-center text-primary">Account Area</h5>
+                <div class="list-group">
+                    <a href="{% url 'users:dashboard' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-columns me-2"></i> Dashboard Overview
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> My Profile
+                    </a>
+                    <a href="{% url 'users:profile_edit' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user-edit me-2"></i> Edit Profile Info
+                    </a>
+                    <a href="{% url 'users:password_change' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editing Form Card -->
+        <div class="col-lg-7 col-md-8 mb-4">
+            <div class="card premium-card border-0 shadow-sm" style="background-color: #fff;">
+                <div class="card-body-custom p-5">
+                    <h3 class="font-weight-bold text-dark mb-4 text-center text-sm-start">Edit Profile Information</h3>
+
+                    <form method="post" enctype="multipart/form-data" class="mt-4">
+                        {% csrf_token %}
+
+                        {% if u_form.errors or p_form.errors %}
+                        <div class="alert alert-danger py-2 small border-0 text-danger">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Please check the highlighted fields below.
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            <!-- First Name -->
+                            <div class="col-sm-6">
+                                <label for="id_first_name" class="form-label font-weight-medium small text-dark">First Name</label>
+                                <input type="text" name="first_name" class="form-control border-secondary bg-white {% if u_form.first_name.errors %}is-invalid{% endif %}" id="id_first_name" placeholder="First Name" value="{{ u_form.first_name.value|default:'' }}">
+                                {% if u_form.first_name.errors %}
+                                <div class="invalid-feedback">{% for error in u_form.first_name.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-sm-6">
+                                <label for="id_last_name" class="form-label font-weight-medium small text-dark">Last Name</label>
+                                <input type="text" name="last_name" class="form-control border-secondary bg-white {% if u_form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" placeholder="Last Name" value="{{ u_form.last_name.value|default:'' }}">
+                                {% if u_form.last_name.errors %}
+                                <div class="invalid-feedback">{% for error in u_form.last_name.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-sm-6">
+                                <label for="id_email" class="form-label font-weight-medium small text-dark">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control border-secondary bg-white {% if u_form.email.errors %}is-invalid{% endif %}" required id="id_email" placeholder="you@example.com" value="{{ u_form.email.value|default:'' }}">
+                                {% if u_form.email.errors %}
+                                <div class="invalid-feedback">{% for error in u_form.email.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="col-sm-6">
+                                <label for="id_phone" class="form-label font-weight-medium small text-dark">Phone Number</label>
+                                <input type="text" name="phone" class="form-control border-secondary bg-white {% if p_form.phone.errors %}is-invalid{% endif %}" id="id_phone" placeholder="Phone Number" value="{{ p_form.phone.value|default:'' }}">
+                                {% if p_form.phone.errors %}
+                                <div class="invalid-feedback">{% for error in p_form.phone.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Profile Image Upload -->
+                            <div class="col-12">
+                                <label for="id_profile_image" class="form-label font-weight-medium small text-dark">Profile Image</label>
+                                <div class="input-group">
+                                    <input type="file" name="profile_image" class="form-control border-secondary bg-white {% if p_form.profile_image.errors %}is-invalid{% endif %}" id="id_profile_image" accept="image/*">
+                                </div>
+                                {% if p_form.profile_image.errors %}
+                                <div class="text-danger small mt-1">{% for error in p_form.profile_image.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                                <div class="form-text text-muted" style="font-size: 10px;">Upload an image (JPG, PNG).</div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="id_address" class="form-label font-weight-medium small text-dark">Default Address</label>
+                                <textarea name="address" class="form-control border-secondary bg-white {% if p_form.address.errors %}is-invalid{% endif %}" id="id_address" rows="3" placeholder="Enter details...">{{ p_form.address.value|default:'' }}</textarea>
+                                {% if p_form.address.errors %}
+                                <div class="invalid-feedback">{% for error in p_form.address.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Seller Account Checkbox -->
+                            <div class="col-12 mt-4">
+                                <div class="card p-3 bg-light border-0 shadow-sm" style="border-radius: 12px;">
+                                    <div class="form-check d-flex align-items-center">
+                                        <input class="form-check-input me-3" type="checkbox" name="is_seller" id="id_is_seller" style="width: 22px; height: 22px; border-color: var(--primary);" {% if p_form.is_seller.value %}checked{% endif %}>
+                                        <label class="form-check-label text-start" for="id_is_seller">
+                                            <span class="d-block font-weight-bold text-dark mb-0">Enable Seller / Vendor Mode</span>
+                                            <span class="d-block text-muted small" style="font-size: 11px;">Enable this role to gain access to create and manage shop stalls, products, and discounts.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5">
+                            <a href="{% url 'users:profile' %}" class="btn btn-premium-outline">Cancel</a>
+                            <button type="submit" class="btn btn-premium text-white">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

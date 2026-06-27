@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | Baazaarnama{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <!-- Sidebar Navigation Panel -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="dashboard-sidebar">
+                <h5 class="font-weight-bold mb-4 text-center text-primary">Seller Console</h5>
+                <div class="list-group">
+                    <a href="{% url 'users:dashboard' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-columns me-2"></i> Dashboard Overview
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user me-2"></i> My Profile
+                    </a>
+                    <a href="{% url 'users:profile_edit' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i> Edit Profile Info
+                    </a>
+                    <a href="{% url 'users:password_change' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-key me-2"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Shop Card -->
+        <div class="col-lg-7 col-md-8 mb-4">
+            <div class="card premium-card border-0 shadow-sm" style="background-color: #fff;">
+                <div class="card-body-custom p-5">
+                    <h3 class="font-weight-bold text-dark mb-4 text-center text-sm-start">{{ title }}</h3>
+                    <p class="text-muted small mb-4">Register your physical shop in our database. Plot your layout coordinates so users can trace walking routes to your shop stall.</p>
+
+                    <form method="post" enctype="multipart/form-data" class="mt-4">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger py-2 small border-0 text-danger">
+                            <i class="fas fa-exclamation-triangle me-1"></i> Please check the required fields below.
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            {% for field in form %}
+                            <div class="{% if field.name in 'description address' %}col-12{% else %}col-sm-6{% endif %}">
+                                <label for="{{ field.id_for_label }}" class="form-label font-weight-medium small text-dark">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">{% for error in field.errors %}{{ error }}{% endfor %}</div>
+                                {% endif %}
+                                {% if field.help_text %}
+                                <div class="form-text text-muted" style="font-size: 10px;">{{ field.help_text|safe }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Grid coordinates instructions warning -->
+                        <div class="alert alert-light border mt-4 p-3 d-flex align-items-start small" style="border-radius:12px;">
+                            <i class="fas fa-info-circle text-primary me-2 mt-1"></i>
+                            <div class="text-muted">
+                                <b>Virtual Stall Coordinates:</b> Select map coordinates between 1 and 10. Walkways are columns/rows 3 and 7; other coordinates represent shop stall grid blocks.
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a href="{% url 'users:dashboard_seller' %}" class="btn btn-premium-outline">Cancel</a>
+                            <button type="submit" class="btn btn-premium text-white">Save Stall Details</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Styling inputs specifically inside the seller console forms */
+    .form-control, .form-select {
+        border-color: var(--secondary) !important;
+        background-color: #fff !important;
+        color: var(--text-dark) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 5px rgba(139, 94, 60, 0.2) !important;
+    }
+</style>
+{% endblock %}
