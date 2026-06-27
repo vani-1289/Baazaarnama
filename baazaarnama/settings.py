@@ -26,7 +26,20 @@ SECRET_KEY = 'django-insecure-6f&7@46ux@ydl5eq!#=y&wei7art1mp(%qgy4b!6h=8zu=8y_p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+#     "localhost",
+#     "baazaarnama.onrender.com",
+# ]
+
+ALLOWED_HOSTS = [
+    ".onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "https://baazaarnama.onrender.com",
+]
 
 
 # Application definition
